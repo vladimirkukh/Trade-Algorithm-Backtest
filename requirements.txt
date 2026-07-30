@@ -1,0 +1,8 @@
+
+streamlit==1.32.0     # Powers the web app interface and interactive controls
+
+pandas==2.1.4         # Handles data tables, timelines, and financial metrics
+
+plotly==5.18.0        # Generates interactive, zoomable equity charts
+
+yfinance==0.2.36      # Fetches historical stock and crypto prices from Yahoo Finance
