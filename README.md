@@ -21,7 +21,40 @@ A lightweight algorithmic trading backtester built with Python and Streamlit. Th
 
 If you want to run this project on your local machine, follow these steps:
 
-### 1. Clone the repository
+### Clone the repository
+
 ```bash
-git clone [https://github.com/YOUR-USERNAME/YOUR-REPOSITORY-NAME.git](https://github.com/YOUR-USERNAME/YOUR-REPOSITORY-NAME.git)
-cd YOUR-REPOSITORY-NAME
+git clone https://github.com/vladimirkukh/Trade-Algorithm-Backtest.git
+cd YOUR REPOSITORY
+```
+
+### Create a virtual environment (recommended)
+
+macOS / Linux
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Windows
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+### Install the required packages
+
+```bash
+pip install -r requirements.txt
+```
+
+### Run the application
+
+```bash
+streamlit run app.py
+```
+
+The application will open automatically in your web browser.
+
+---
