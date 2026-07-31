@@ -1,3 +1,12 @@
+"""
+Author: Vladimir Kukharev
+Date: 2026-07-31
+Version: 1.1
+<APP> is responsible for the Streamlit web interface of the Algo Backtest
+and initiates the backtest process. It handles user inputs, displays and
+the interactive feedback of the results.
+
+"""
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
@@ -5,14 +14,14 @@ import plotly.graph_objects as go
 import datetime
 from strategy import get_data, compute_signals, run_backtest
 
-# ── Page config ────────────────────────────────────────────────────────────────
+# ── Page config ─────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Algo Backtester",
-    page_icon="📈",
-    layout="wide",
+    page_title = "Algo Backtester",
+    page_icon = "📈",
+    layout = "wide",
 )
 
-# ── Styles ─────────────────────────────────────────────────────────────────────
+# ──CSS Styles───────────────────────────────────────────────────────────────
 st.markdown(
     """
     <style>
@@ -78,7 +87,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# ── Bot metadata ───────────────────────────────────────────────────────────────
+# ── Bot metadata ─────────────────────────────────────────────────────────
 BOT_INFO = {
     "UT Bot": {
         "subtitle": "ATR Trailing Stop · Trend-following · Daily bars",
@@ -101,13 +110,12 @@ BOT_INFO = {
         "accent":   "#f59e0b",
         "fill":     "rgba(245,158,11,0.08)",
         "about": (
-            "**V Bot** is currently under development. Check back soon for details on its "
-            "signal logic, parameter controls, and backtested performance."
+            "**V Bot** is currently under development."
         ),
     },
 }
 
-# ── Header ─────────────────────────────────────────────────────────────────────
+# ── Header ─────────────────────────────────────────────────────────────────
 st.markdown("## Algo Backtester")
 st.markdown(
     "<p style='color:#6b7280;margin-top:-0.5rem;font-size:0.9rem;'>"
@@ -120,7 +128,7 @@ st.divider()
 # ── Sidebar ────────────────────────────────────────────────────────────────────
 with st.sidebar:
 
-    # Strategy selector — sits above everything else
+    # Strategy selector
     st.markdown("### Strategy")
     strategy = st.radio(
         "strategy_radio",
@@ -183,7 +191,7 @@ with st.sidebar:
     run_btn = st.button("▶  Run Backtest", width='stretch', type="primary",
                         disabled=(strategy == "V Bot"))
 
-# ── Main header updates with selected strategy ─────────────────────────────────
+# ── Main header updates with selected strategy ───────────────────────────────
 accent = info["accent"]
 st.markdown(
     f"<span style='font-family:IBM Plex Mono;font-size:1.1rem;color:{accent};font-weight:600;'>"
@@ -193,7 +201,7 @@ st.markdown(
 )
 st.markdown("<div style='height:1rem'></div>", unsafe_allow_html=True)
 
-# ── V Bot placeholder ──────────────────────────────────────────────────────────
+# ── V Bot placeholder ───────────────────────────────────────────────────────
 if strategy == "V Bot":
     st.info("**V Bot** strategy is not yet available. Select **UT Bot** to run a backtest.")
     st.stop()
@@ -203,7 +211,7 @@ if not ticker:
     st.warning("Please enter a ticker symbol before running the backtest.")
     st.stop()
 
-# ── Run backtest on button click, persist results across reruns ────────────────
+# ── Run backtest on button click, persist results across reruns ───────────────
 if run_btn:
     try:
         end_date   = datetime.date.today()
@@ -242,7 +250,7 @@ equity  = results["equity"]
 trades  = results["trades"]
 metrics = results["metrics"]
 
-# ── Metric cards ───────────────────────────────────────────────────────────────
+# ── Metric cards ─────────────────────────────────────────────────────────────
 def metric_card(col, label: str, value: str, positive: bool | None = None):
     cls = ""
     if positive is True:  cls = "positive"
@@ -266,7 +274,7 @@ metric_card(c3, "Win Rate",     f"{metrics['Win Rate (%)']}%",
 
 st.markdown("<div style='height:1.5rem'></div>", unsafe_allow_html=True)
 
-# ── Equity curve ───────────────────────────────────────────────────────────────
+#── Equity curve ──────────────────────────────────────────────────────────────
 show_bh = st.toggle("Show Buy & Hold (raw price)", value=False)
 
 fig = go.Figure()
@@ -292,14 +300,17 @@ if show_bh:
             mode="lines",
             name="Buy & Hold",
             line=dict(color="#facc15", width=2, dash="dot"),
+            #yellow dotted line to display nominal stock price
         )
     )
 
 fig.add_hline(y=1.0, line=dict(color="#374151", width=1, dash="dot"))
+# Horizontal line to indicate starting point
 
 buy_dates  = df_sig[df_sig["Buy"]].index
 sell_dates = df_sig[df_sig["Sell"]].index
 
+# guards to avoid errors when there are no signals
 if not buy_dates.empty:
     fig.add_trace(go.Scatter(
         x=buy_dates, y=equity.reindex(buy_dates).values,
@@ -314,6 +325,7 @@ if not sell_dates.empty:
         marker=dict(symbol="triangle-down", color="#f87171", size=10),
     ))
 
+# match layout to dark theme and add labels
 fig.update_layout(
     title=dict(
         text=f"{ticker} · {strategy} · Indexed Equity Curve (3 months)",

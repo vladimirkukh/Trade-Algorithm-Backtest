@@ -1,3 +1,14 @@
+"""
+Author: Vladimir Kukharev
+Date: 2026-07-31
+Version: 1.1
+<Strategy> is responsible for implementing the UT Bot, using an ATR Trailing Stop 
+strategy. It provides functions to donwload historical OHLCV data and computes
+signals based on the strategy. 
+
+Notes: <interval> value responsible for the freq. of the OHLCV data. 
+"""
+
 import yfinance as yf
 import pandas as pd
 import numpy as np
